@@ -1,0 +1,580 @@
+.container-div {
+  overflow-x: hidden;
+  position: absolute;
+}
+.search-body {
+  background: transparent 0% 0% no-repeat padding-box;
+  // opacity: 1;
+  // margin-left: 0px;
+  // background-size: cover;
+  height: 85%;
+  width: 100%;
+  // z-index: -1;
+  // overflow-y: scroll;
+  position: fixed;
+  // z-index: 999 !important;
+  border-radius: 8px;
+  // box-shadow: 1px 2px 8px rgba(156, 149, 149, 0.65);
+  //PC-  margin: 5rem auto 8.1rem auto;
+  margin: 0 auto 0 auto;
+  min-width: 300px;
+  .body-container {
+    //PC- width: 40%;
+    width: 100%;
+    position: absolute;
+    //PC- top: 50%;
+    top: 0%;
+    left: 50%;
+    height: 50%;
+    transform: translate(-50%, -50%);
+    .logo-text {
+      // font-size: 3.5rem;
+      // font-weight: 800;
+      // color: #ed0c6d;
+      // letter-spacing: 0.3rem;
+      height: 60px;
+      max-width: 100%;
+    }
+    .flex-width {
+      // width: 100%;
+      // background: #ffffff 0% 0% no-repeat padding-box;
+      // box-shadow: 0px 3px 12px #00000029;
+      // border-radius: 35px !important;
+      // opacity: 1;
+      // margin: 30% 0 7% 0;
+      width: 100%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 50%;
+      transform: translate(-50%, -50%);
+      #mic-span {
+        position: relative;
+        float: right;
+        font-weight: 200;
+        z-index: 999;
+        width: 13px;
+        height: 13px;
+        color: #f2006c !important;
+        margin: -35px 25px 0 10px;
+        cursor: pointer;
+      }
+      #search-span {
+        position: relative;
+        float: left;
+        font-weight: 100;
+        z-index: 999;
+        color: #f2006c !important;
+        width: 20px;
+        height: 20px;
+        margin: -35px 0px 0px 18px;
+      }
+    }
+    .search-btn {
+      text-align: center;
+      width: fit-content;
+      position: absolute;
+      top: 70%;
+      left: 50%;
+      height: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
+
+.auto-center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+// .ng-autocomplete {
+//   ::ng-deep .autocomplete-container {
+//     background: #ffffff 0% 0% no-repeat padding-box;
+//     box-shadow: 0px 3px 12px #00000029;
+//   }
+// }
+.ng-autocomplete {
+  ::ng-deep .autocomplete-container {
+    border-radius: 35px;
+    padding-left: 25px;
+    padding-right: 35px;
+    width: 100%;
+    height: 45px;
+  }
+}
+
+.ng-autocomplete {
+  ::ng-deep .autocomplete-container .input-container {
+    height: -webkit-fill-available;
+  }
+}
+
+// .ng-autocomplete {
+//   ::ng-deep .autocomplete-container:focus {
+//     border: 1.5px solid #ed0c6d !important;
+//     box-shadow: none !important;
+//   }
+// }
+
+.ng-autocomplete {
+  ::ng-deep .autocomplete-container input {
+    height: inherit;
+  }
+}
+.ng-autocomplete {
+  ::ng-deep .autocomplete-container {
+    box-shadow: none;
+    outline: 0;
+    border: 2px solid #ced4da;
+    background-color: #fff;
+  }
+}
+
+.ng-autocomplete {
+  ::ng-deep .autocomplete-container .x {
+    right: 38px;
+  }
+}
+
+//hover
+// .ng-autocomplete {
+//   ::ng-deep .autocomplete-container .suggestions-container ul li:last-child .complete-selected,
+//   ::ng-deep .autocomplete-container .suggestions-container ul li:last-child:hover {
+//     border-radius: 0 0 30px 30px;
+//     background-color: #f9dbe9;
+//   }
+// }
+
+.ng-autocomplete {
+  ::ng-deep .autocomplete-container .suggestions-container .complete-selected,
+  ::ng-deep .autocomplete-container .suggestions-container ul li:hover {
+    background-color: #f9dbe9;
+  }
+}
+
+//button display
+.btn-display {
+  display: none !important;
+  z-index: 999;
+}
+
+//for suggestion List
+
+.ng-autocomplete {
+  ::ng-deep .autocomplete-container .suggestions-container {
+    border-radius: 0px 0px 30px 30px;
+    width: 100.79%;
+    margin: 0px -27px;
+  }
+}
+
+.ng-autocomplete {
+  ::ng-deep .autocomplete-container .suggestions-container ul li a {
+    color: #112950 !important;
+    padding: 5px 5px;
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+    // color: rgba(0,0,0,.87);
+    font-size: 12px;
+  }
+}
+
+.ng-autocomplete {
+  ::ng-deep .autocomplete-container .suggestions-container ul {
+    max-height: 130px;
+  }
+}
+
+.suggest-border .ng-autocomplete {
+  ::ng-deep .autocomplete-container .suggestions-container {
+    box-shadow: none;
+    outline: 0;
+    border-left: 2px solid #ced4da;
+    border-right: 2px solid #ced4da;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #ced4da;
+  }
+}
+
+.input-search .ng-autocomplete {
+  ::ng-deep .autocomplete-container,
+  ::ng-deep .autocomplete-container input {
+    border-radius: 30px 30px 0px 0px;
+  }
+}
+//not found
+.ng-autocomplete {
+  ::ng-deep .autocomplete-container .not-found {
+    border: none !important;
+  }
+}
+.ng-autocomplete {
+  ::ng-deep .autocomplete-container .input-container input {
+    padding: 0 30px 0px 20px;
+  }
+}
+input {
+  font-family: Arial !important;
+}
+
+.location-property {
+  color: #ed0c6d;
+  font-size: 18px;
+  margin: 1% 0 0 4%;
+}
+
+.suggestion-text {
+  font: normal normal normal 10px/18px Montserrat;
+  text-transform: capitalize;
+}
+
+.searchButton {
+  width: 120px;
+  height: fit-content;
+  text-align: center;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 6px;
+}
+.recommened {
+  border: 1px solid #ef0073;
+  background: #ef0073;
+  color: #fff;
+  font-weight: 600;
+}
+.recommened:hover {
+  background: #ccc !important;
+  border: 1px solid #ef0073 !important;
+  color: #ef0073;
+}
+.colive-search {
+  background: #fff;
+    border: 1px solid #cccccc;
+    font-weight: 600;
+    color: #ED0C6D;
+    box-shadow: 0.2px 0.5px 2px #ccc;
+}
+.colive-search:hover {
+  border: 1px solid #ef0073;
+  background: #ef0073 !important;
+  color: #fff;
+}
+.img-fluid {
+  padding: 0px;
+  height: 120px;
+  margin-top: -20%;
+}
+
+@media only screen and (max-width: 1199px) and (max-height: 611px) {
+  .search-body .body-container {
+    .flex-width {
+      top: 62%;
+    }
+    .search-btn {
+      top: 90%;
+    }
+  }
+}
+
+@media only screen and (max-width: 1199px) and (max-height: 499px) {
+  .search-body .body-container {
+    .flex-width {
+      top: 72%;
+    }
+    .search-btn {
+      top: 112%;
+    }
+  }
+}
+
+@media only screen and (max-width: 1199px) and (max-height: 399px) {
+  .search-body .body-container {
+    .flex-width {
+      top: 82%;
+    }
+    .search-btn {
+      top: 132%;
+    }
+  }
+}
+
+@media only screen and (max-width: 1024px) and (max-height: 611px) {
+  .search-body {
+    .body-container {
+      .flex-width {
+        //PC- width: 125%;
+        width: 100%;
+        top: 60%;
+      }
+      .search-btn {
+        top: 90%;
+        .searchButton {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 1024px) and (max-height: 499px) {
+  .search-body {
+    .body-container {
+      .flex-width {
+        top: 70%;
+      }
+      .search-btn {
+        top: 112%;
+      }
+    }
+  }
+}
+@media screen and (max-width: 905px) {
+  .search-body {
+    .body-container {
+      .search-btn {
+        top: 70%;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .search-body {
+    .body-container {
+      .logo-text {
+        height: 55px;
+      }
+      .flex-width {
+        //PC- width: 150%;
+        width: 100%;
+        top: 58%;
+      }
+      .search-btn {
+        top: 84%;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 580px) {
+  .search-body {
+    .body-container {
+      .search-btn {
+        //PC- width: 165%;
+        width: 85%;
+        .searchButton {
+          //PC- width: 37%;
+          width: 31%;
+          // height: 34px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .search-body {
+    .body-container {
+      .search-btn .searchButton {
+        // width: 67%;
+        // height: 34px;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  .search-body {
+    .body-container {
+      .logo-text {
+        height: 50px;
+      }
+      .flex-width {
+        // PC-width: 195%;
+        width: 100%;
+        top: 50%;
+        .ng-autocomplete {
+          ::ng-deep .autocomplete-container,
+          ::ng-deep .autocomplete-container input {
+            font-size: 13px;
+          }
+        }
+        .ng-autocomplete {
+          ::ng-deep .autocomplete-container {
+            height: 40px;
+          }
+        }
+      }
+      .search-btn {
+        top: 72%;
+        .searchButton {
+          // PC- width: 108px;
+          width: 100%;
+          // height: 32px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 375px) {
+  .search-body {
+    .body-container {
+      .flex-width {
+        // PC- width: 205%;
+        width: 100%;
+        top: 50%;
+        .ng-autocomplete {
+          ::ng-deep .autocomplete-container,
+          ::ng-deep .autocomplete-container input {
+            font-size: 12px;
+          }
+        }
+      }
+      .search-btn {
+        //PC- width: 158%;
+        width: 75%;
+        .searchButton {
+          width: 100%;
+          // height: 30px;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .search-body {
+    .body-container {
+      .logo-text {
+        height: 45px;
+      }
+      .flex-width {
+        // PC- width: 205%;
+        width: 100%;
+        .ng-autocomplete {
+          ::ng-deep .autocomplete-container,
+          ::ng-deep .autocomplete-container input {
+            font-size: 10px;
+          }
+        }
+      }
+      .search-btn {
+        .searchButton {
+          width: 75%;
+          // height: 28px;
+          font-size: 11px;
+        }
+      }
+    }
+  }
+}
+
+// @media screen and (max-height: 700px) {
+//   .search-body {
+//     .body-container {
+//       .flex-width {
+//         top: 45%;
+//       }
+//       .search-btn {
+//         top: 68%;
+//       }
+//     }
+//   }
+// }
+
+@media screen and (max-width: 768px) and (max-height: 610px) {
+  .search-body {
+    .body-container {
+      .flex-width {
+        top: 50%;
+      }
+      .search-btn {
+        top: 75%;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) and (max-height: 510px) {
+  .search-body {
+    .body-container {
+      .flex-width {
+        top: 55%;
+      }
+      .search-btn {
+        top: 85%;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) and (max-height: 410px) {
+  .search-body {
+    .body-container {
+      .flex-width {
+        top: 60%;
+      }
+      .search-btn {
+        top: 98%;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) and (max-height: 375px) {
+  .search-body {
+    // PC- margin: 4rem auto 8.1rem auto;
+    margin: 0 auto;
+    .body-container {
+      .flex-width {
+        top: 65%;
+      }
+      .search-btn {
+        top: 112%;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) and (max-height: 375px) {
+  .search-body {
+    //PC-  margin: 3rem auto 8.1rem auto;
+    margin: 0 auto;
+    .body-container {
+      .flex-width {
+        top: 80%;
+      }
+      .search-btn {
+        top: 142%;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) and (max-height: 225px) {
+  .search-body {
+    //PC- margin: 3rem auto 8.1rem auto;
+    margin: 0 auto;
+    .body-container {
+      .flex-width {
+        top: 80%;
+      }
+      .search-btn {
+        top: 162%;
+      }
+    }
+  }
+}
+
+.loader-container {
+  z-index: 1;
+  position: relative;
+}

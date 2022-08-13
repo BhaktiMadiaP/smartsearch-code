@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "colive-26ba8",
+    "ng build --prod --base-href /dev/smartsearch/": "colive-search-system-dev"
+  }
+}

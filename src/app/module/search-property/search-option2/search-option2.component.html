@@ -1,0 +1,102 @@
+<ngx-loading
+  [show]="loading"
+  [config]="{
+    primaryColour: '#ED0C6D',
+    secondaryColour: '#ED0C6D',
+    tertiaryColour: '#ED0C6D'
+  }"
+>
+</ngx-loading>
+<div class="container-div" id="search">
+  <div class="row col-md-12 search-body">
+    <div *ngIf="domain" class="body-container text-center">
+      <!-- <img
+        class="logo-text"
+        alt="Colive"
+        src="./../../../../assets/Colive Product Sans HDPI Logo.png"
+      /> -->
+      <div
+        class="flex-width"
+        id="auoComplete"
+        [ngClass]="{ 'suggest-border': suggestionList.length }"
+        [ngClass]="{
+          'input-search': searchQuery !== '' || suggestionList.length
+        }"
+      >
+        <ng-autocomplete
+          appendTo="body"
+          class="ng-autocomplete"
+          placeholder="Try our all new Natural Language Processing search"
+          id="auto-searchbar"
+          (selected)="selectEvent($event)"
+          (keypress)="keyPress($event)"
+          [searchKeyword]="'name'"
+          (inputChanged)="onFilterTextChanged($event)"
+          [data]="suggestionList"
+          [itemTemplate]="itemTemplate"
+          [(ngModel)]="searchQuery"
+          (inputCleared)="onClearSearchQuery()"
+        >
+        </ng-autocomplete>
+
+        <ng-template #itemTemplate let-item>
+          <ng-container *ngIf="suggestionList && suggestionList.length">
+            <div class="d-flex text-left" id="item-list">
+              <ng-container *ngIf="item.type == 'location'">
+                <span class="material-icons-outlined location-property"
+                  >location_on</span
+                >
+              </ng-container>
+              <ng-container *ngIf="item.type == 'property'">
+                <span class="material-icons-outlined location-property"
+                  >maps_home_work</span
+                >
+              </ng-container>
+              <ng-container *ngIf="item.type == 'auto'"> </ng-container>
+
+              <a class="suggestion-text" [innerHTML]="item.name"></a>
+            </div>
+          </ng-container>
+        </ng-template>
+
+        <span id="search-span" class="material-icons search-icon">search</span>
+        <span
+          *ngIf="showMic"
+          id="mic-span"
+          class="material-icons mic-icon"
+          (click)="startStopVoiceRecognition()"
+          >mic_none</span
+        >
+      </div>
+      <div class="search-btn d-flex justify-content-center" id="search-button">
+        <button
+          type="submit"
+          class="searchButton colive-search mr-3"
+          (click)="searchFunctionFormat()"
+        >
+          {{searchButtonValue}}
+        </button>
+        <ng-container *ngIf="isRecommendation">
+        <button
+          type="submit"
+          class="searchButton recommened"
+          (click)="recommendationRediret()"
+        >
+          Recommened
+        </button>
+      </ng-container>
+      </div>
+    </div>
+
+    <div *ngIf="!domain">
+      <div>Source domain is missing from embed url:</div>
+
+      <div>Expected Template :- https://url?sourceDomain="your URL)"</div>
+
+      <div>
+        Ex:-
+        https://search.colive.com/dev/colive-search?sourceDomain="https://qa.colive.com/smartsearch"
+      </div>
+    </div>
+  </div>
+</div>

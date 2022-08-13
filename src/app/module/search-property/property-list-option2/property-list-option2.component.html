@@ -1,0 +1,876 @@
+<ngx-loading [show]="loading" [config]="{
+    primaryColour: '#ED0C6D',
+    secondaryColour: '#ED0C6D',
+    tertiaryColour: '#ED0C6D'
+  }">
+</ngx-loading>
+<div class="container-div prop-list">
+  <div class="row ml-2" style="z-index: 999 !important;">
+    <!-- <div class="col-md-2 logo-text-div text-center">
+      <span class="logo-text">COLIVE</span>
+      <img
+        class="logo-text"
+        src="assets/Colive Product Sans Logo 160x45.png"
+      />
+    </div> -->
+    <div class="col-md-12 text-center">
+      <div class="w-100 text-center">
+        <div class="search" [class.h-60]="matchedPropertyList && matchedPropertyList.length">
+          <div class="flex-width" id="auoComplete" [ngClass]="{ 'suggest-border': suggestionList.length }" [ngClass]="{
+            'input-search': searchQuery !== null || suggestionList.length
+          }">
+            <ng-autocomplete class="ng-autocomplete" placeholder="Try our all new Natural Language Processing search"
+              id="auto-searchbar" (selected)="selectEvent($event)" (keypress)="keyPress($event)"
+              [searchKeyword]="'name'" (inputChanged)="onChangeSearch($event)" [data]="suggestionList"
+              [itemTemplate]="itemTemplate" [(ngModel)]="searchQuery" (inputCleared)="onClearSearchQuery()">
+            </ng-autocomplete>
+
+            <ng-template #itemTemplate let-item>
+              <ng-container *ngIf="suggestionList && suggestionList.length">
+                <div class="d-flex text-left" id="item-list">
+                  <ng-container *ngIf="item.type == 'location'">
+                    <span class="material-icons-outlined location-property">location_on</span>
+                  </ng-container>
+                  <ng-container #logotemp *ngIf="item.type == 'property'">
+                    <span class="material-icons-outlined location-property">maps_home_work</span>
+                  </ng-container>
+                  <ng-container *ngIf="item.type == 'auto'"> </ng-container>
+                  <a class="suggestion-text" [innerHTML]="item.name"></a>
+                </div>
+              </ng-container>
+            </ng-template>
+            <span id="search-span" class="material-icons search-icon">search</span>
+            <span *ngIf="showMic" id="mic-span" class="material-icons mic-icon"
+              (click)="startStopVoiceRecognition()">mic_none</span>
+          </div>
+          <span id="search-span" class="material-icons search-icon">search</span>
+          <!-- <span id="mic-span" class="material-icons mic-icon">mic_none</span> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr *ngIf="matchedPropertyList && matchedPropertyList.length" />
+  <!-- nav-bar -->
+
+
+  <div class="row" *ngIf="matchedPropertyList && matchedPropertyList.length">
+    <div class="col-md-12">
+      <nav>
+        <div class="nav nav-tabs pl-5" id="nav-tab" role="tablist">
+          <ng-container *ngIf="matchedPropertyList && matchedPropertyList.length">
+            <a class="nav-link nav-item active text-center" id="'matchedProerties'" data-toggle="tab" role="tab"
+              aria-controls="matched" aria-selected="true" [class.active]="tab == 'matchedProerties'"
+              (click)="tab = 'matchedProerties'">
+              <div class="d-flex justify-content-center m-3">
+                <span class="material-icons-outlined check-circle-icon">task_alt</span>
+                <span class="tab-title" [ngClass]="{ 'tab-title-active': tab == 'matchedProerties' }">
+                  Matched
+                </span>
+              </div>
+            </a>
+          </ng-container>
+          <ng-container *ngIf="trendingPropertyList && trendingPropertyList.length">
+            <a class="nav-link nav-item text-center" id="'tredingProperties'" data-toggle="tab" role="tab"
+              aria-controls="treding" aria-selected="false" [class.active]="tab == 'tredingProperties'"
+              (click)="tab = 'tredingProperties'">
+              <div class="d-flex justify-content-center m-3">
+                <span class="material-icons-outlined trending-up-icon">trending_up</span>
+                <span class="tab-title" [ngClass]="{ 'tab-title-active': tab == 'tredingProperties' }">
+                  Trending
+                </span>
+              </div>
+            </a>
+          </ng-container>
+          <ng-container *ngIf="similarPropertyList && similarPropertyList.length">
+            <a class="nav-link nav-item text-center" id="'similarProperties'" data-toggle="tab" role="tab"
+              aria-controls="similar" aria-selected="false" [class.active]="tab == 'similarProperties'"
+              (click)="tab = 'similarProperties'">
+              <div class="d-flex justify-content-center m-3">
+                <span class="material-icons-outlined similar-icon">autorenew</span>
+                <span class="tab-title" [ngClass]="{ 'tab-title-active': tab == 'similarProperties' }">
+                  Similar
+                </span>
+              </div>
+            </a>
+          </ng-container>
+        </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-backgroud tab-pane fade show active" id="matched" role="tabpanel"
+          [class.active]="tab == 'matchedProerties'" aria-labelledby="matchedProerties">
+          <div id="totalResult">
+            <ng-container *ngIf="matchedPropertyList && matchedPropertyList.length">
+              <span>About {{ matchedPropertyList.length }} results</span>
+            </ng-container>
+          </div>
+          <ng-container *ngIf="spellCorrectedQuery">
+            <div class="d-flex did-you-mean">
+              <div id="text-div">
+                <span id="text">Did you mean:</span>
+              </div>
+              <div>
+                <span id="query" style="cursor: pointer" class="ml-1" [innerHTML]="spellCorrectedQuery | bold"
+                  (click)="changeDidyouMean()"></span>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="propertyMessage">
+            <div id="message">
+              <div class="d-flex">
+                <span class="message-title">Note:&nbsp;</span>
+                <span class="message-body">{{ propertyMessage }} </span>
+              </div>
+            </div>
+          </ng-container>
+          <div class="row property-card" [ngClass]="{ showMore: property.showMore }"
+            *ngFor="let property of matchedPropertyList">
+            <ul>
+              <li class="d-flex mt-3">
+                <ng-container *ngIf="property && property.metaData">
+                  <div class="d-flex" *ngIf="property.metaData.isSponsored">
+                    <span id="sponsered">Sponsored</span>
+                    <span id="dot"></span>
+                  </div>
+                </ng-container>
+                <!-- <div>
+                  <span id="location">{{ property.metaData.subLocation }}</span>
+                </div> -->
+              </li>
+              <li>
+                <span id="propertyName" class="d-flex">
+                  <a (click)="trackClicks(property.PropertyID,property.metaData.propertyLink)"
+                    rel="noopener noreferrer">{{
+                    property.metaData.propertyName }}</a>
+                  <ng-container *ngIf="property.metaData.isColiveProperty">
+                    <img src="assets/Crown.svg" class="crown">
+                  </ng-container>
+                  <!-- <a href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                      (click)="trackClicks(property.PropertyID,property.metaData.propertyLink)" target="_blank" rel="noopener noreferrer">{{
+                      property.metaData.propertyName }}</a> -->
+                </span>
+              </li>
+
+              <li>
+                <span id="price"> ₹ {{ property.metaData.price
+                }}&nbsp;&nbsp;onwards</span>
+              </li>
+              <li class="justify-content-center">
+                <div *ngIf="property.metaData.locationHighlights" class="mt-1">
+                  <span id="propertyDescription">
+                    <span *ngIf="!property.showMore" [innerHTML]="
+                        trimString(property.metaData.locationHighlights, 300)
+                      ">
+                      <!-- {{
+                        trimString(property.metaData.locationHighlights, 300)
+                      }} -->
+                    </span>
+                    <span *ngIf="property.showMore" [innerHTML]="property.metaData.locationHighlights">
+                      <!-- {{ property.metaData.locationHighlights }} -->
+                    </span>
+                    <div *ngIf="property.metaData.locationHighlights.length > 300"
+                      (click)="property.showMore = !property.showMore" class="show-more-design">
+                      Show
+                      <span>{{ property.showMore ? "less" : "More" }}</span>
+                    </div>
+                  </span>
+                </div>
+              </li>
+              <li class="d-flex mt-2">
+                <ng-container *ngIf="
+                    property &&
+                    property.propertyDetails &&
+                    property.propertyDetails.distance &&
+                    property.propertyDetails.distance[0]
+                  ">
+                  <div class="d-flex" id="location-margin">
+                    <span class="material-icons-outlined location-icon">location_on</span>
+                    <span id="locationRating">{{
+                      property.propertyDetails.distance[0]
+                      }}</span>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="property.metaData.buildingGenderType">
+                  <img class="genderDisplayIcon ml-3" *ngIf="property.metaData.buildingGenderType==='CoLiving'"
+                    src="assets/Unisex.svg">
+                  <img class="genderDisplayIcon ml-3" style="margin-top: -4px;" *ngIf="property.metaData.buildingGenderType==='Boys'"
+                    src="assets/Male.svg">
+                  <img class="genderDisplayIcon ml-3" style="margin-top: -4px;" *ngIf="property.metaData.buildingGenderType==='Girls'"
+                    src="assets/Female.svg">
+                </ng-container>
+                <ng-container *ngIf="property.metaData.npsScore && property.metaData.npsScore!=0">
+                  <div class="ml-3">
+                    <span id="nps" class="d-flex justify-content-center">
+                      {{property.metaData.npsScore}} <span class="material-icons star-icon ">star</span>
+                    </span>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="
+                    property &&
+                    property.propertyDetails &&
+                    property.propertyDetails.matchPercentage
+                  ">
+                  <div class="ml-3 d-flex " id="circle" style="margin-top: 2px;">
+                    <!-- property.propertyDetails.matchPercentage -->
+                    <circle-progress class="mt--9" [percent]="100" [radius]="8" [outerStrokeWidth]="2"
+                      [innerStrokeColor]="'#ED0C6D'" [innerStrokeWidth]="4" [outerStrokeColor]="'#ED0C6D'"
+                      [clockwise]="false" [animation]="true" [showTitle]="false" [showSubtitle]="false"
+                      [showUnits]="false" [imageHeight]="50" [imageWidth]="50" [animationDuration]="300">
+                    </circle-progress>
+                    <span id="locationRating">{{
+                      property.propertyDetails.matchPercentage
+
+                      }}
+                      %</span>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="property.metaData.propertyRating > 0">
+                  <div class="d-flex">
+                    <span class="material-icons rating-icon">star</span>
+                    <span id="locationRating">{{
+                      property.metaData.propertyRating
+                      }}</span>
+                  </div>
+                </ng-container>
+              </li>
+              <!-- <li class="row mt-2">
+                <ng-container *ngIf="property.metaData.price">
+                  <div class="d-flex ml-3" id="price-div">
+                    <span id="price">₹ {{ property.metaData.price
+                      }}<span id="onwards">&nbsp;&nbsp;onwards</span></span>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="
+                    property &&
+                    property.propertyDetails &&
+                    property.propertyDetails.matchPercentage
+                  ">
+                  <div class="d-flex ml-3" id="circle">
+                    <circle-progress class="mt--9" [percent]="100" [radius]="8" [outerStrokeWidth]="2"
+                      [innerStrokeColor]="'#ED0C6D'" [innerStrokeWidth]="4" [outerStrokeColor]="'#ED0C6D'"
+                      [clockwise]="false" [animation]="true" [showTitle]="false" [showSubtitle]="false"
+                      [showUnits]="false" [imageHeight]="50" [imageWidth]="50" [animationDuration]="300">
+                    </circle-progress>
+                    <span id="locationRating">{{
+                      property.propertyDetails.matchPercentage
+                      | number: "1.2-2"
+                      }}
+                      %</span>
+                  </div>
+                </ng-container>
+              </li> -->
+              <li class="row mt-2">
+                <div class="col-md-12">
+                  <div style="height: 30px; display: inline-block !important" class="text-center"
+                    *ngFor="let badge of property.badgeList">
+                    <span id="badge" class="badge-text tag-btn mr-3" [innerHTML]="badge"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="d-flex mt-2">
+                <!-- <a href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                    (click)="trackClicks(property.PropertyID)" target="_parent" rel="noopener noreferrer">
+                    <div class="d-flex">
+                      <span class="material-icons-outlined view-video-share-icon">maps_home_work</span>&nbsp;
+                      <span class="share-text">View</span>
+                    </div>
+                  </a> -->
+                <a (click)="trackClicks(property.PropertyID,property.metaData.propertyLink)" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">maps_home_work</span>&nbsp;
+                    <span class="share-text">View</span>
+                  </div>
+                </a>
+
+                <span id="dot"></span>
+
+                <!-- <a href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                    (click)="trackClicks(property.PropertyID)" target="_parent" rel="noopener noreferrer">
+                    <div class="d-flex">
+                      <span class="material-icons-outlined view-video-share-icon">videocam</span>&nbsp;
+                      <span class="share-text">Schedule Video Visit</span>
+                    </div>
+                  </a> -->
+                <a (click)="trackClicks(property.PropertyID,property.metaData.propertyLink)" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">videocam</span>&nbsp;
+                    <span class="share-text">Schedule Video Visit</span>
+                  </div>
+                </a>
+                <!-- <a
+                  id="view-property-link"
+                  href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                  (click)="trackClicks(property.PropertyID)"
+                  [target]="openType"
+                  rel="noopener noreferrer"
+                >
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon"
+                      >videocam</span
+                    >&nbsp;
+                    <span class="share-text">Schedule Video Visit</span>
+                  </div>
+                </a> -->
+                <span id="dot"></span>
+
+                <!-- <a href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                    (click)="trackClicks(property.PropertyID)" target="_parent" rel="noopener noreferrer">
+                    <div class="d-flex">
+                      <span class="material-icons-outlined view-video-share-icon">share</span>&nbsp;
+                      <span class="share-text">Share</span>
+                    </div>
+                  </a> -->
+                <a (click)="trackClicks(property.PropertyID,property.metaData.propertyLink)" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">share</span>&nbsp;
+                    <span class="share-text">Share</span>
+                  </div>
+                </a>
+                <!-- <a id="view-property-link" href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                  (click)="trackClicks(property.PropertyID)" [target]="openType" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">share</span>&nbsp;
+                    <span class="share-text">Share</span>
+                  </div>
+                </a> -->
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="tab-backgroud tab-pane fade" id="treding" role="tabpanel"
+          [class.active]="tab == 'tredingProperties'" [class.show]="tab == 'tredingProperties'"
+          aria-labelledby="tredingProperties">
+          <div id="totalResult">
+            <span>About {{ trendingPropertyList.length }} results</span>
+          </div>
+          <ng-container *ngIf="spellCorrectedQuery">
+            <div class="d-flex did-you-mean">
+              <span id="text">Did you mean:</span>
+              <span id="query" class="ml-2" [innerHTML]="spellCorrectedQuery | bold"></span>
+            </div>
+          </ng-container>
+          <div class="row property-card" [ngClass]="{ showMore: property.showMore }"
+            *ngFor="let property of trendingPropertyList">
+            <ul>
+              <li class="d-flex mt-3">
+                <ng-container *ngIf="property && property.metaData"></ng-container>
+
+                <div class="d-flex" *ngIf="property.metaData.isSponsored">
+                  <span id="sponsered">Sponsored</span>
+                  <span id="dot"></span>
+                </div>
+                <!-- <div>
+                  <span id="location">{{ property.metaData.subLocation }}</span>
+                </div> -->
+              </li>
+              <li>
+                <span id="propertyName" class="d-flex">
+
+                  <!-- <a href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                      (click)="trackClicks(property.PropertyID)" target="_parent" rel="noopener noreferrer">
+                      {{
+                      property.metaData.propertyName }}
+                    </a> -->
+                  <a (click)="trackClicks(property.PropertyID,property.metaData.propertyLink)"
+                    rel="noopener noreferrer">
+                    {{
+                    property.metaData.propertyName }}
+                  </a>
+                  <ng-container *ngIf="property.metaData.isColiveProperty">
+                    <img src="assets/Crown.svg" class="crown">
+                  </ng-container>
+
+                </span>
+              </li>
+              <li>
+                <span id="price"> ₹ {{ property.metaData.price
+                }}&nbsp;&nbsp;onwards</span>
+              </li>
+              <li class="justify-content-center">
+                <ng-container *ngIf="property.metaData.locationHighlights">
+                  <span id="propertyDescription">
+                    <span *ngIf="!property.showMore" [innerHTML]="
+                        trimString(property.metaData.locationHighlights, 300)
+                      ">
+                      <!-- {{
+                        trimString(property.metaData.locationHighlights, 300)
+                      }} -->
+                    </span>
+                    <span *ngIf="property.showMore" [innerHTML]="property.metaData.locationHighlights">
+                      <!-- {{ property.metaData.locationHighlights }} -->
+                    </span>
+                    <div *ngIf="property.metaData.locationHighlights.length > 300"
+                      (click)="property.showMore = !property.showMore" class="show-more-design">
+                      Show
+                      <span>{{ property.showMore ? "less" : "More" }}</span>
+                    </div>
+                  </span>
+                </ng-container>
+              </li>
+
+              <li class="d-flex mt-2">
+                <ng-container *ngIf="
+                    property &&
+                    property.propertyDetails &&
+                    property.propertyDetails.distance &&
+                    property.propertyDetails.distance[0]
+                  ">
+                  <div class="d-flex" id="location-margin">
+                    <span class="material-icons-outlined location-icon">location_on</span>
+                    <span id="locationRating">{{
+                      property.propertyDetails.distance[0]
+                      }}</span>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="property.metaData.buildingGenderType">
+                  <img class="genderDisplayIcon ml-3" *ngIf="property.metaData.buildingGenderType==='CoLiving'"
+                    src="assets/Unisex.svg">
+                  <img class="genderDisplayIcon ml-3" style="margin-top: -4px;" *ngIf="property.metaData.buildingGenderType==='Boys'"
+                    src="assets/Male.svg">
+                  <img class="genderDisplayIcon ml-3" style="margin-top: -4px;" *ngIf="property.metaData.buildingGenderType==='Girls'"
+                    src="assets/Female.svg">
+                </ng-container>
+                <ng-container *ngIf="property.metaData.npsScore && property.metaData.npsScore!=0">
+                  <div class="ml-3">
+                    <span id="nps" class="d-flex justify-content-center">
+                      {{property.metaData.npsScore}} <span class="material-icons star-icon ">star</span>
+                    </span>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="
+                    property &&
+                    property.propertyDetails &&
+                    property.propertyDetails.matchPercentage
+                  ">
+                  <div class="ml-3 d-flex " id="circle" style="margin-top: 2px;">
+                    <!-- property.propertyDetails.matchPercentage -->
+                    <circle-progress class="mt--9" [percent]="100" [radius]="8" [outerStrokeWidth]="2"
+                      [innerStrokeColor]="'#ED0C6D'" [innerStrokeWidth]="4" [outerStrokeColor]="'#ED0C6D'"
+                      [clockwise]="false" [animation]="true" [showTitle]="false" [showSubtitle]="false"
+                      [showUnits]="false" [imageHeight]="50" [imageWidth]="50" [animationDuration]="300">
+                    </circle-progress>
+                    <span id="locationRating">{{
+                      property.propertyDetails.matchPercentage
+
+                      }}
+                      %</span>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="property.metaData.propertyRating > 0">
+                  <div class="d-flex">
+                    <span class="material-icons rating-icon">star</span>
+                    <span id="locationRating">{{
+                      property.metaData.propertyRating
+                      }}</span>
+                  </div>
+                </ng-container>
+              </li>
+              <!-- <li class="row mt-2">
+                <ng-container *ngIf="property.metaData.price">
+                  <div class="d-flex ml-3" id="price-div">
+                    <span id="price">₹ {{ property.metaData.price
+                      }}<span id="onwards">&nbsp;&nbsp;onwards</span></span>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="
+                    property &&
+                    property.propertyDetails &&
+                    property.propertyDetails.matchPercentage
+                  ">
+                  <div class="d-flex ml-3" id="circle">
+
+                    <circle-progress class="mt--9" [percent]="100" [radius]="8" [outerStrokeWidth]="2"
+                      [innerStrokeColor]="'#ED0C6D'" [innerStrokeWidth]="4" [outerStrokeColor]="'#ED0C6D'"
+                      [clockwise]="false" [animation]="true" [showTitle]="false" [showSubtitle]="false"
+                      [showUnits]="false" [imageHeight]="50" [imageWidth]="50" [animationDuration]="300">
+                    </circle-progress>
+                    <span id="locationRating">{{
+                      property.propertyDetails.matchPercentage
+
+                      }}
+                      %</span>
+                  </div>
+                </ng-container>
+              </li> -->
+
+              <li class="row mt-2">
+                <div class="col-md-12">
+                  <div style="height: 30px; display: inline-block !important" class="text-center"
+                    *ngFor="let badge of property.badgeList">
+                    <span id="badge" class="badge-text tag-btn mr-3" [innerHTML]="badge"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="d-flex m-0">
+                <!-- <a href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                    (click)="trackClicks(property.PropertyID)" target="_parent" rel="noopener noreferrer">
+                    <div class="d-flex">
+                      <span class="material-icons-outlined view-video-share-icon">maps_home_work</span>&nbsp;
+                      <span class="share-text">View</span>
+                    </div>
+                  </a> -->
+                <a (click)="trackClicks(property.PropertyID,property.metaData.propertyLink)" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">maps_home_work</span>&nbsp;
+                    <span class="share-text">View</span>
+                  </div>
+                </a>
+
+                <!-- <a id="view-property-link" href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                  (click)="trackClicks(property.PropertyID)" [target]="openType" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">maps_home_work</span>&nbsp;
+                    <span class="share-text">View</span>
+                  </div>
+                </a> -->
+                <span id="dot"></span>
+
+                <!-- <a href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                    (click)="trackClicks(property.PropertyID)" target="_parent" rel="noopener noreferrer">
+                    <div class="d-flex">
+                      <span class="material-icons-outlined view-video-share-icon">videocam</span>&nbsp;
+                      <span class="share-text">Schedule Video Visit</span>
+                    </div>
+                  </a> -->
+                <a (click)="trackClicks(property.PropertyID,property.metaData.propertyLink)" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">videocam</span>&nbsp;
+                    <span class="share-text">Schedule Video Visit</span>
+                  </div>
+                </a>
+                <!-- <a id="view-property-link" href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                  (click)="trackClicks(property.PropertyID)" [target]="openType" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">videocam</span>&nbsp;
+                    <span class="share-text">Schedule Video Visit</span>
+                  </div>
+                </a> -->
+                <span id="dot"></span>
+                <!-- <a href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                    (click)="trackClicks(property.PropertyID)" target="_parent" rel="noopener noreferrer">
+                    <div class="d-flex">
+                      <span class="material-icons-outlined view-video-share-icon">share</span>&nbsp;
+                      <span class="share-text">Share</span>
+                    </div>
+                  </a> -->
+                <a (click)="trackClicks(property.PropertyID,property.metaData.propertyLink)" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">share</span>&nbsp;
+                    <span class="share-text">Share</span>
+                  </div>
+                </a>
+
+                <!-- <a id="view-property-link" href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                  (click)="trackClicks(property.PropertyID)" [target]="openType" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">share</span>&nbsp;
+                    <span class="share-text">Share</span>
+                  </div>
+                </a> -->
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="tab-backgroud tab-pane fade" id="similar" role="tabpanel" aria-labelledby="similarProperties"
+          [class.show]="tab == 'similarProperties'" [class.active]="tab == 'similarProperties'">
+          <div id="totalResult">
+            <span>About {{ similarPropertyList.length }} results</span>
+          </div>
+          <ng-container *ngIf="spellCorrectedQuery">
+            <div class="d-flex did-you-mean">
+              <span id="text">Did you mean:</span>
+              <span id="query" class="ml-2" [innerHTML]="spellCorrectedQuery | bold"></span>
+            </div>
+          </ng-container>
+          <div class="row property-card" [ngClass]="{ showMore: property.showMore }"
+            *ngFor="let property of similarPropertyList">
+            <ul>
+              <li class="d-flex mt-3">
+                <ng-container *ngIf="property && property.metaData">
+                  <div class="d-flex" *ngIf="property.metaData.isSponsored">
+                    <span id="sponsered">Sponsored</span>
+                    <span id="dot"></span>
+                  </div>
+                  <!-- <div>
+                    <span id="location">{{
+                      property.metaData.subLocation
+                      }}</span>
+                  </div> -->
+                </ng-container>
+              </li>
+              <li>
+                <span id="propertyName" class="d-flex">
+                  <!-- <a href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                      (click)="trackClicks(property.PropertyID)" target="_parent" rel="noopener noreferrer">
+                      {{
+                      property.metaData.propertyName }}
+                    </a> -->
+                  <a (click)="trackClicks(property.PropertyID,property.metaData.propertyLink)"
+                    rel="noopener noreferrer">
+                    {{
+                    property.metaData.propertyName }}
+                  </a>
+                  <ng-container *ngIf="property.metaData.isColiveProperty">
+                    <img src="assets/Crown.svg" class="crown">
+                  </ng-container>
+                  <!-- <a href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                    (click)="trackClicks(property.PropertyID)" [target]="openType" rel="noopener noreferrer">{{
+                    property.metaData.propertyName }}</a> -->
+                </span>
+              </li>
+              <li>
+                <span id="price"> ₹ {{ property.metaData.price
+                }}&nbsp;&nbsp;onwards</span>
+              </li>
+              <li class="justify-content-center">
+                <ng-container *ngIf="property.metaData.locationHighlights">
+                  <span id="propertyDescription">
+                    <span *ngIf="!property.showMore" [innerHTML]="
+                        trimString(property.metaData.locationHighlights, 300)
+                      ">
+                      <!-- {{
+                        trimString(property.metaData.locationHighlights, 300)
+                      }} -->
+                    </span>
+                    <span *ngIf="property.showMore" [innerHTML]="property.metaData.locationHighlights">
+                      <!-- {{ property.metaData.locationHighlights }} -->
+                    </span>
+                    <div *ngIf="property.metaData.locationHighlights.length > 300"
+                      (click)="property.showMore = !property.showMore" class="show-more-design">
+                      Show
+                      <span>{{ property.showMore ? "less" : "More" }}</span>
+                    </div>
+                  </span>
+                </ng-container>
+              </li>
+
+              <li class="d-flex mt-2">
+                <ng-container *ngIf="
+                    property &&
+                    property.propertyDetails &&
+                    property.propertyDetails.distance &&
+                    property.propertyDetails.distance[0]
+                  ">
+                  <div class="d-flex" id="location-margin">
+                    <span class="material-icons-outlined location-icon">location_on</span>
+                    <span id="locationRating">{{
+                      property.propertyDetails.distance[0]
+                      }}</span>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="property.metaData.buildingGenderType">
+                  <img class="genderDisplayIcon ml-3" style="margin-top: -2px;" *ngIf="property.metaData.buildingGenderType==='CoLiving'"
+                    src="assets/Unisex.svg">
+                  <img class="genderDisplayIcon ml-3" style="margin-top: -2px;" *ngIf="property.metaData.buildingGenderType==='Boys'"
+                    src="assets/Male.svg">
+                  <img class="genderDisplayIcon ml-3" style="margin-top: -2px;" *ngIf="property.metaData.buildingGenderType==='Girls'"
+                    src="assets/Female.svg">
+                </ng-container>
+                <ng-container *ngIf="property.metaData.npsScore && property.metaData.npsScore!=0">
+                  <div class="ml-3">
+                    <span id="nps" class="d-flex justify-content-center">
+                      {{property.metaData.npsScore}} <span class="material-icons star-icon ">star</span>
+                    </span>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="
+                    property &&
+                    property.propertyDetails &&
+                    property.propertyDetails.matchPercentage
+                  ">
+                  <div class="ml-3 d-flex " id="circle" style="margin-top: 2px;">
+                    <!-- property.propertyDetails.matchPercentage -->
+                    <circle-progress class="mt--9" [percent]="100" [radius]="8" [outerStrokeWidth]="2"
+                      [innerStrokeColor]="'#ED0C6D'" [innerStrokeWidth]="4" [outerStrokeColor]="'#ED0C6D'"
+                      [clockwise]="false" [animation]="true" [showTitle]="false" [showSubtitle]="false"
+                      [showUnits]="false" [imageHeight]="50" [imageWidth]="50" [animationDuration]="300">
+                    </circle-progress>
+                    <span id="locationRating">{{
+                      property.propertyDetails.matchPercentage
+
+                      }}
+                      %</span>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="property.metaData.propertyRating > 0">
+                  <div class="d-flex">
+                    <span class="material-icons rating-icon">star</span>
+                    <span id="locationRating">{{
+                      property.metaData.propertyRating
+                      }}</span>
+                  </div>
+                </ng-container>
+              </li>
+              <!-- <li class="row mt-2">
+                <ng-container *ngIf="property.metaData.price">
+                  <div class="d-flex ml-3" id="price-div">
+                    <span id="price">₹ {{ property.metaData.price
+                      }}<span id="onwards">&nbsp;&nbsp;onwards</span></span>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="
+                    property &&
+                    property.propertyDetails &&
+                    property.propertyDetails.matchPercentage
+                  ">
+                  <div class="d-flex ml-3" id="circle">
+                    <circle-progress class="mt--9" [percent]="100" [radius]="8" [outerStrokeWidth]="2"
+                      [innerStrokeColor]="'#ED0C6D'" [innerStrokeWidth]="4" [outerStrokeColor]="'#ED0C6D'"
+                      [clockwise]="false" [animation]="true" [showTitle]="false" [showSubtitle]="false"
+                      [showUnits]="false" [imageHeight]="50" [imageWidth]="50" [animationDuration]="300">
+                    </circle-progress>
+                    <span id="locationRating">{{
+                      property.propertyDetails.matchPercentage
+
+                      }}
+                      %</span>
+                  </div>
+                </ng-container>
+              </li> -->
+              <li class="row mt-2">
+                <div class="col-md-12">
+                  <div style="height: 30px; display: inline-block !important" class="text-center"
+                    *ngFor="let badge of property.badgeList">
+                    <span id="badge" class="badge-text tag-btn mr-3" [innerHTML]="badge"></span>
+                  </div>
+                </div>
+              </li>
+              <li class="d-flex m-0">
+                <a (click)="trackClicks(property.PropertyID,property.metaData.propertyLink)" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">maps_home_work</span>&nbsp;
+                    <span class="share-text">View</span>
+                  </div>
+                </a>
+                <!-- <a href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                    (click)="trackClicks(property.PropertyID)" target="_blank" rel="noopener noreferrer">
+                    <div class="d-flex">
+                      <span class="material-icons-outlined view-video-share-icon">maps_home_work</span>&nbsp;
+                      <span class="share-text">View</span>
+                    </div>
+                  </a> -->
+                <!-- <a id="view-property-link" href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                  (click)="trackClicks(property.PropertyID)" [target]="openType" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">maps_home_work</span>&nbsp;
+                    <span class="share-text">View</span>
+                  </div>
+                </a> -->
+                <span id="dot"></span>
+                <!-- <a href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                    (click)="trackClicks(property.PropertyID)" target="_parent" rel="noopener noreferrer">
+                    <div class="d-flex">
+                      <span class="material-icons-outlined view-video-share-icon">videocam</span>&nbsp;
+                      <span class="share-text">Schedule Video Visit</span>
+                    </div>
+                  </a> -->
+                <a (click)="trackClicks(property.PropertyID,property.metaData.propertyLink)" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">videocam</span>&nbsp;
+                    <span class="share-text">Schedule Video Visit</span>
+                  </div>
+                </a>
+
+                <!-- <a id="view-property-link" href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                  (click)="trackClicks(property.PropertyID)" [target]="openType" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">videocam</span>&nbsp;
+                    <span class="share-text">Schedule Video Visit</span>
+                  </div>
+                </a> -->
+                <span id="dot"></span>
+
+                <!-- <a href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                    (click)="trackClicks(property.PropertyID)" target="_parent" rel="noopener noreferrer">
+                    <div class="d-flex">
+                      <span class="material-icons-outlined view-video-share-icon">share</span>&nbsp;
+                      <span class="share-text">Share</span>
+                    </div>
+                  </a> -->
+                <a (click)="trackClicks(property.PropertyID,property.metaData.propertyLink)" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">share</span>&nbsp;
+                    <span class="share-text">Share</span>
+                  </div>
+                </a>
+                <!-- <a id="view-property-link" href="{{ hostName }}{{ property.metaData.propertyLink }}"
+                  (click)="trackClicks(property.PropertyID)" [target]="openType" rel="noopener noreferrer">
+                  <div class="d-flex">
+                    <span class="material-icons-outlined view-video-share-icon">share</span>&nbsp;
+                    <span class="share-text">Share</span>
+                  </div>
+                </a> -->
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- related search title -->
+  <div class="mb-5" *ngIf="
+      (matchedPropertyList && matchedPropertyList.length) ||
+      (trendingPropertyList && trendingPropertyList.length) ||
+      (similarPropertyList && similarPropertyList.length)
+    ">
+    <ng-container *ngIf="bottomSuggesionList && bottomSuggesionList.length">
+      <div id="relatedSearchTitle">
+        <span>Related Searches</span>
+      </div>
+      <!-- search cards -->
+      <div class="row mt-3">
+        <div class="col-lg-9 col-md-9 col-12 ml">
+          <ng-container *ngFor="let suggestion of bottomSuggesionList">
+            <div class="row col-md-3 search-cards search-cards-nth-child"
+              (click)="searchBottomSuggestionQuery(suggestion.value)">
+              <div class="d-flex suggested-text">
+                <span class="material-icons search-icon">search</span>
+                <span class="suggestion" [innerHTML]="suggestion.displayValue | bold"></span>
+                <!-- <div class="suggestion-text-div">
+                  <div class="wrap">
+
+                  </div>
+                </div> -->
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <div class="col-lg-3 col-md-3"></div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- <div class="row col-md-12 mb-5 container-footer">
+    <div class="footer">
+      <img
+        alt="Colive"
+        src="./../../../../assets/Colive Product Sans Logo 160x45.png"
+      />
+
+    </div>
+  </div> -->
+</div>
+
+<!-- <img src="./../../../../assets/paginator.png" alt=""> -->
+<!-- <div id="page">
+        <ng-container *ngFor="let value of numbers;let i=index">
+          <ng-container *ngIf="i+1<6; else next">
+            <div id="pagination-width">
+              <span id="pagination">{{i+1}}</span>
+            </div>
+          </ng-container>
+          <ng-template #next>
+            <div id="pagination-width">
+              <span id="pagination" (click)="nextPagination(i)">Next</span>
+            </div>
+          </ng-template>
+        </ng-container>
+      </div> -->
